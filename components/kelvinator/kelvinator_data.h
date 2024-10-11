@@ -30,7 +30,7 @@ enum Mode : uint8_t {
 
 enum SwingPosition : uint8_t {
   OFF = 0b0000,           // 0
-  AUTO = 0b0001,          // 1
+  SWING_AUTO = 0b0001,          // 1
   HIGHEST = 0b0010,       // 2
   UPPER_MIDDLE = 0b0011,  // 3
   MIDDLE = 0b0100,        // 4
@@ -100,14 +100,14 @@ class ClimateData : public KelvinatorData {
   ClimateData(const KelvinatorData &data) : KelvinatorData(data) {}
 
   void set_power(const bool on) { this->bit_field_.Power = on; }
-  bool get_power(void) const { this->bit_field_.Power; }
+  bool get_power(void) const { return this->bit_field_.Power; }
 
   void set_temp(const uint8_t degrees) {
     uint8_t temp = std::max(KELVINATOR_TEMP_MIN, degrees);
     temp = std::min(KELVINATOR_TEMP_MAX, degrees);
     this->bit_field_.Temp = temp - KELVINATOR_TEMP_MIN;
   }
-  uint8_t get_temp(void) const { this->bit_field_.Temp + KELVINATOR_TEMP_MIN; }
+  uint8_t get_temp(void) const { return this->bit_field_.Temp + KELVINATOR_TEMP_MIN; }
 
   void set_fan(const uint8_t speed) {
     uint8_t fan = std::min(KELVINATOR_FAN_MAX, speed);  // Bounds check
@@ -122,7 +122,7 @@ class ClimateData : public KelvinatorData {
       this->set_turbo(false);
     }
   }
-  uint8_t get_fan(void) const { this->bit_field_.Fan; }
+  uint8_t get_fan(void) const { return this->bit_field_.Fan; }
 
   void set_mode(const Mode mode) {
     if (mode == Mode::AUTO || mode == Mode::DRY) {
@@ -140,7 +140,7 @@ class ClimateData : public KelvinatorData {
     this->bit_field_.SwingV = position;
     this->bit_field_.SwingAuto = (automatic || this->bit_field_.SwingH);
   };
-  bool get_swing_vertical_auto(void) const { this->bit_field_.SwingV & 0b0001; };
+  bool get_swing_vertical_auto(void) const { return this->bit_field_.SwingV & 0b0001; };
   SwingPosition get_swing_vertical_position(void) const {
     uint8_t value = this->bit_field_.SwingV;
     if (value <= LOW_AUTO || value == MIDDLE_AUTO || value == HIGH_AUTO)
@@ -152,22 +152,22 @@ class ClimateData : public KelvinatorData {
     this->bit_field_.SwingH = on;
     this->bit_field_.SwingAuto = (on || (this->bit_field_.SwingV & 0b0001));
   }
-  bool get_swing_horizontal(void) const { this->bit_field_.SwingH; }
+  bool get_swing_horizontal(void) const { return this->bit_field_.SwingH; }
 
   void set_quiet(const bool on) { this->bit_field_.Quiet = on; }
-  bool get_quiet(void) const { this->bit_field_.Quiet; }
+  bool get_quiet(void) const { return this->bit_field_.Quiet; }
 
   void set_ion_filter(const bool on) { this->bit_field_.IonFilter = on; }
-  bool get_ion_filter(void) const { this->bit_field_.IonFilter; }
+  bool get_ion_filter(void) const { return this->bit_field_.IonFilter; }
 
   void set_light(const bool on) { this->bit_field_.Light = on; }
-  bool get_light(void) const { this->bit_field_.Light; }
+  bool get_light(void) const { return this->bit_field_.Light; }
 
   void set_x_fan(const bool on) { this->bit_field_.XFan = on; }
-  bool get_x_fan(void) const { this->bit_field_.XFan; }
+  bool get_x_fan(void) const { return this->bit_field_.XFan; }
 
   void set_turbo(const bool on) { this->bit_field_.Turbo = on; }
-  bool get_turbo(void) const { this->bit_field_.Turbo; }
+  bool get_turbo(void) const { return this->bit_field_.Turbo; }
 
   void fix() {
     if (this->bit_field_.Mode != Mode::COOL && this->bit_field_.Mode != Mode::DRY) {

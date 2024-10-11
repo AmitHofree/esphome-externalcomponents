@@ -62,7 +62,7 @@ void KelvinatorClimate::transmit_state() {
 
   switch (this->swing_mode) {
     case climate::CLIMATE_SWING_VERTICAL:
-      data.set_swing_vertical(true, SwingPosition::AUTO);
+      data.set_swing_vertical(true, SwingPosition::SWING_AUTO);
       break;
     case climate::CLIMATE_SWING_OFF:
     default:
