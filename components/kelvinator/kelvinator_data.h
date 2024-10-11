@@ -1,7 +1,7 @@
 #pragma once
 
-#include "esphome/components/remote_base/kelvinator_protocol.h"
 #include "esphome/components/climate/climate_mode.h"
+#include "kelvinator_protocol.h"
 
 namespace esphome {
 namespace kelvinator {

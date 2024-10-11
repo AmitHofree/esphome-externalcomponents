@@ -1,5 +1,5 @@
-#include "kelvinator_protocol.h"
 #include "esphome/core/log.h"
+#include "kelvinator_protocol.h"
 
 namespace esphome {
 namespace remote_base {
