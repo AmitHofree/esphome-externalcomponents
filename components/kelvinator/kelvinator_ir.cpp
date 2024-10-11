@@ -1,6 +1,6 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
-#include "kelvinator_protocol/kelvinator_protocol.h"
+#include "kelvinator_protocol.h"
 #include "kelvinator_ir.h"
 #include "kelvinator_data.h"
 
