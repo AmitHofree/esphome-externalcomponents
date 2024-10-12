@@ -11,13 +11,21 @@ using remote_base::KelvinatorProtocol;
 
 static const char *const TAG = "kelvinator.climate";
 
+void log_state(const ClimateData& data) {
+  auto rawData = data.get_raw();
+  char buffer[KELVINATOR_STATE_LENGTH * 2 + 1];
+  for (uint8_t i = 0; i < KELVINATOR_STATE_LENGTH; i++) {
+    sprintf(buffer + strlen(buffer), "%02X", rawData[i]);
+  }
+  ESP_LOGV(TAG, "Raw data: %s", buffer);
+}
+
 void KelvinatorClimate::transmit_state() {
   ClimateData data;
-  ESP_LOGV(TAG, "Initial Kelvinator code: 0x%s", data.to_string().c_str());
+  log_state(data);
   data.set_power(true);
   data.set_light(true);
-  ESP_LOGV(TAG, "After defaults Kelvinator code: 0x%s", data.to_string().c_str());
-
+  log_state(data);
 
   switch (this->mode) {
     case climate::CLIMATE_MODE_COOL:
@@ -40,8 +48,7 @@ void KelvinatorClimate::transmit_state() {
       data.set_power(false);
       break;
   }
-  ESP_LOGV(TAG, "AFter mode Kelvinator code: 0x%s", data.to_string().c_str());
-
+  log_state(data);
 
   if (this->mode != climate::CLIMATE_MODE_DRY && this->mode != climate::CLIMATE_MODE_HEAT_COOL) {
     auto temp = static_cast<uint8_t>(roundf(this->target_temperature));
@@ -49,9 +56,7 @@ void KelvinatorClimate::transmit_state() {
   } else {
     data.set_temp(KELVINATOR_TEMP_AUTO);
   }
-
-  ESP_LOGV(TAG, "After temp Kelvinator code: 0x%s", data.to_string().c_str());
-
+  log_state(data);
 
   switch (this->fan_mode.value()) {
     case climate::CLIMATE_FAN_HIGH:
@@ -68,8 +73,7 @@ void KelvinatorClimate::transmit_state() {
       data.set_fan(KELVINATOR_FAN_AUTO);
       break;
   }
-
-  ESP_LOGV(TAG, "After fan Kelvinator code: 0x%s", data.to_string().c_str());
+  log_state(data);
 
   switch (this->swing_mode) {
     case climate::CLIMATE_SWING_VERTICAL:
@@ -80,10 +84,10 @@ void KelvinatorClimate::transmit_state() {
       data.set_swing_vertical(false, SwingPosition::OFF);
       break;
   }
-  ESP_LOGV(TAG, "After swing Kelvinator code: 0x%s", data.to_string().c_str());
-
+  log_state(data);
 
   data.fix();
+  log_state(data);
   ESP_LOGV(TAG, "Sending Kelvinator code: 0x%s", data.to_string().c_str());
   this->transmit_<remote_base::KelvinatorProtocol>(data);
 }
