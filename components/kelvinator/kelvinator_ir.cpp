@@ -13,8 +13,11 @@ static const char *const TAG = "kelvinator.climate";
 
 void KelvinatorClimate::transmit_state() {
   ClimateData data;
+  ESP_LOGV(TAG, "Initial Kelvinator code: 0x%s", data.to_string().c_str());
   data.set_power(true);
   data.set_light(true);
+  ESP_LOGV(TAG, "After defaults Kelvinator code: 0x%s", data.to_string().c_str());
+
 
   switch (this->mode) {
     case climate::CLIMATE_MODE_COOL:
@@ -37,6 +40,8 @@ void KelvinatorClimate::transmit_state() {
       data.set_power(false);
       break;
   }
+  ESP_LOGV(TAG, "AFter mode Kelvinator code: 0x%s", data.to_string().c_str());
+
 
   if (this->mode != climate::CLIMATE_MODE_DRY && this->mode != climate::CLIMATE_MODE_HEAT_COOL) {
     auto temp = static_cast<uint8_t>(roundf(this->target_temperature));
@@ -44,6 +49,9 @@ void KelvinatorClimate::transmit_state() {
   } else {
     data.set_temp(KELVINATOR_TEMP_AUTO);
   }
+
+  ESP_LOGV(TAG, "After temp Kelvinator code: 0x%s", data.to_string().c_str());
+
 
   switch (this->fan_mode.value()) {
     case climate::CLIMATE_FAN_HIGH:
@@ -61,6 +69,8 @@ void KelvinatorClimate::transmit_state() {
       break;
   }
 
+  ESP_LOGV(TAG, "After fan Kelvinator code: 0x%s", data.to_string().c_str());
+
   switch (this->swing_mode) {
     case climate::CLIMATE_SWING_VERTICAL:
       data.set_swing_vertical(true, SwingPosition::SWING_AUTO);
@@ -70,6 +80,8 @@ void KelvinatorClimate::transmit_state() {
       data.set_swing_vertical(false, SwingPosition::OFF);
       break;
   }
+  ESP_LOGV(TAG, "After swing Kelvinator code: 0x%s", data.to_string().c_str());
+
 
   data.fix();
   ESP_LOGV(TAG, "Sending Kelvinator code: 0x%s", data.to_string().c_str());
