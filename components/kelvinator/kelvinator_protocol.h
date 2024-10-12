@@ -18,7 +18,7 @@ class KelvinatorData {
     std::copy_n(data.begin(), std::min(data.size(), this->data_.size()), this->data_.begin());
   }
   KelvinatorData(uint8_t *data, uint8_t size) {
-    std::copy_n(data, std::min(size, KELVINATOR_STATE_LENGTH), this->data_);
+    std::copy_n(data, std::min(size, KELVINATOR_STATE_LENGTH), this->data_.begin());
   }
   uint8_t *data() { return this->data_.data(); }
   const uint8_t *data() const { return this->data_.data(); }
