@@ -96,7 +96,7 @@ struct ClimateBitField {
 
 class ClimateData : public KelvinatorData {
  public:
-  ClimateData() : KelvinatorData() {}
+  ClimateData() : KelvinatorData() { this->state_reset_(); }
   ClimateData(const KelvinatorData &data) : KelvinatorData(data) {}
 
   void set_power(const bool on) { this->bit_field_.Power = on; }
@@ -174,11 +174,9 @@ class ClimateData : public KelvinatorData {
       this->set_x_fan(false);
     }
 
-    this->data_[3] = 0x50;
     this->data_[8] = this->data_[0];
     this->data_[9] = this->data_[1];
     this->data_[10] = this->data_[2];
-    this->data_[11] = 0x70;
     this->update_checksum_();
   }
 
@@ -188,8 +186,14 @@ class ClimateData : public KelvinatorData {
     ClimateBitField bit_field_;
   };
 
+  void state_reset_() {
+    this->data_.fill(0);
+    this->data_[3] = 0x50;
+    this->data_[11] = 0x70;
+  }
+
   void update_checksum_() {
-    this->bit_field_.Sum1 = KelvinatorData::calc_block_checksum_(this->data_.data());
+    this->bit_field_.Sum1 = calc_block_checksum_(this->data_.data());
     this->bit_field_.Sum2 = calc_block_checksum_(this->data_.data() + 8);
   }
 };

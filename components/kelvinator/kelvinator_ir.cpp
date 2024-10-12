@@ -14,6 +14,7 @@ static const char *const TAG = "kelvinator.climate";
 void KelvinatorClimate::transmit_state() {
   ClimateData data;
   data.set_power(true);
+  data.set_light(true);
 
   switch (this->mode) {
     case climate::CLIMATE_MODE_COOL:
