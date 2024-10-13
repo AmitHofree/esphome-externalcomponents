@@ -22,9 +22,9 @@ static const uint16_t KELVINATOR_GAP_SPACE = KELVINATOR_GAP_SPACE_TICKS * KELVIN
 static const uint8_t KELVINATOR_CHECKSUM_START = 10;
 
 void log_state(const RemoteTransmitData& dst) {
-  auto data = data.get_data();
-  const size_t BUFFER_SIZE = 9 + data.size() * 12 + 1;
-  char buffer[BUFFER_SIZE];
+  auto data = dst.get_data();
+  size_t buffer_size = 9 + data.size() * 12 + 1;
+  char* buffer = new char[BUFFER_SIZE];
   strcpy(buffer, "Raw data:");
   
   for (size_t i = 0; i < data.size(); ++i) {
@@ -33,6 +33,7 @@ void log_state(const RemoteTransmitData& dst) {
   }
     
   ESP_LOGV(TAG, "%s", buffer);
+  delete[] buffer;
 }
 
 void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &data) {
@@ -61,7 +62,7 @@ void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &d
     dst->item(KELVINATOR_BIT_MARK, 2 * KELVINATOR_GAP_SPACE);
   }
 
-  log_state(dst);
+  log_state(*dst);
 }
 
 void KelvinatorProtocol::encode_byte_(RemoteTransmitData *dst, uint8_t item) {
