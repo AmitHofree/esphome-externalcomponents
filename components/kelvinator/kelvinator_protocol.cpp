@@ -21,6 +21,20 @@ static const uint16_t KELVINATOR_GAP_SPACE_TICKS = 235;
 static const uint16_t KELVINATOR_GAP_SPACE = KELVINATOR_GAP_SPACE_TICKS * KELVINATOR_TICK;
 static const uint8_t KELVINATOR_CHECKSUM_START = 10;
 
+void log_state(const ClimateData& data) {
+  auto rawData = data.get_data();
+  const size_t BUFFER_SIZE = 9 + data.size() * 12 + 1;
+  char buffer[BUFFER_SIZE];
+  strcpy(buffer, "Raw data:");
+  
+  for (size_t i = 0; i < data.size(); ++i) {
+      // Append each value to the buffer
+      snprintf(buffer + strlen(buffer), 12, " %d", data[i]);
+  }
+    
+  ESP_LOGV(TAG, "%s", buffer);
+}
+
 void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &data) {
   dst->set_carrier_frequency(38000);
   dst->reserve(2 * (2 * 6 + 2 * 8 * 8));  // Each message can carry 8 bytes, and requires 6 extra signals
@@ -46,6 +60,8 @@ void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &d
     }
     dst->item(KELVINATOR_BIT_MARK, 2 * KELVINATOR_GAP_SPACE);
   }
+
+  log_state(dst);
 }
 
 void KelvinatorProtocol::encode_byte_(RemoteTransmitData *dst, uint8_t item) {

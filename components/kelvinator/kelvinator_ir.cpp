@@ -22,10 +22,8 @@ void log_state(const ClimateData& data) {
 
 void KelvinatorClimate::transmit_state() {
   ClimateData data;
-  log_state(data);
   data.set_power(true);
   data.set_light(true);
-  log_state(data);
 
   switch (this->mode) {
     case climate::CLIMATE_MODE_COOL:
@@ -48,7 +46,6 @@ void KelvinatorClimate::transmit_state() {
       data.set_power(false);
       break;
   }
-  log_state(data);
 
   if (this->mode != climate::CLIMATE_MODE_DRY && this->mode != climate::CLIMATE_MODE_HEAT_COOL) {
     auto temp = static_cast<uint8_t>(roundf(this->target_temperature));
@@ -56,7 +53,6 @@ void KelvinatorClimate::transmit_state() {
   } else {
     data.set_temp(KELVINATOR_TEMP_AUTO);
   }
-  log_state(data);
 
   switch (this->fan_mode.value()) {
     case climate::CLIMATE_FAN_HIGH:
@@ -73,7 +69,6 @@ void KelvinatorClimate::transmit_state() {
       data.set_fan(KELVINATOR_FAN_AUTO);
       break;
   }
-  log_state(data);
 
   switch (this->swing_mode) {
     case climate::CLIMATE_SWING_VERTICAL:
@@ -84,7 +79,6 @@ void KelvinatorClimate::transmit_state() {
       data.set_swing_vertical(false, SwingPosition::OFF);
       break;
   }
-  log_state(data);
 
   data.fix();
   log_state(data);
