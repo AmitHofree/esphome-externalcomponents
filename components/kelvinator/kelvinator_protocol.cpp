@@ -21,8 +21,8 @@ static const uint16_t KELVINATOR_GAP_SPACE_TICKS = 235;
 static const uint16_t KELVINATOR_GAP_SPACE = KELVINATOR_GAP_SPACE_TICKS * KELVINATOR_TICK;
 static const uint8_t KELVINATOR_CHECKSUM_START = 10;
 
-void log_state(const RemoteTransmitData& data) {
-  auto rawData = data.get_data();
+void log_state(const RemoteTransmitData& dst) {
+  auto data = data.get_data();
   const size_t BUFFER_SIZE = 9 + data.size() * 12 + 1;
   char buffer[BUFFER_SIZE];
   strcpy(buffer, "Raw data:");
