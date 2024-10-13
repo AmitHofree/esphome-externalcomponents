@@ -24,7 +24,7 @@ static const uint8_t KELVINATOR_CHECKSUM_START = 10;
 void log_state(const RemoteTransmitData& dst) {
   auto data = dst.get_data();
   size_t buffer_size = 9 + data.size() * 12 + 1;
-  char* buffer = new char[BUFFER_SIZE];
+  char* buffer = new char[buffer_size];
   strcpy(buffer, "Raw data:");
   
   for (size_t i = 0; i < data.size(); ++i) {
