@@ -35,7 +35,7 @@ void log_state_32(const int data[], size_t length) {
   delete[] buffer;
 }
 
-void log_state_8(const char data[], size_t length) {
+void log_state_u8(const unsigned char data[], size_t length) {
   size_t buffer_size = 9 + length * 12 + 1;
   char* buffer = new char[buffer_size];
   strcpy(buffer, "Raw data:");
