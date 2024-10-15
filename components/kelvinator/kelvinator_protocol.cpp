@@ -35,24 +35,18 @@ void log_state_32(const int data[], size_t length) {
   delete[] buffer;
 }
 
-void log_state_u8(const unsigned char data[], size_t length) {
-  size_t buffer_size = 9 + length * 12 + 1;
-  char* buffer = new char[buffer_size];
-  strcpy(buffer, "Raw data:");
-  
-  for (size_t i = 0; i < length; ++i) {
-      // Append each value to the buffer
-      snprintf(buffer + strlen(buffer), 12, " %d", data[i]);
+void log_state_u8(const unsigned char data[]) {
+  char buffer[KELVINATOR_STATE_LENGTH * 2 + 1] = {0};
+  for (uint8_t i = 0; i < KELVINATOR_STATE_LENGTH; i++) {
+    snprintf(buffer + strlen(buffer), 3, "%02X", data[i]);
   }
-    
-  ESP_LOGV(TAG, "%s", buffer);
-  delete[] buffer;
+  ESP_LOGV(TAG, "Raw data: %s", buffer);
 }
 
 void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &data) {
   dst->set_carrier_frequency(38000);
   dst->reserve(2 * 2 * (6 + 8 * 8));  // Two messages, each message can carry 8 bytes, requires 6 extra bits, and each bit is one mark + space
-  log_state_u8(data.data(), KELVINATOR_STATE_LENGTH);
+  log_state_u8(data.data());
 
   // There are two messages back-to-back in a full Kelvinator IR message
   // sequence.
