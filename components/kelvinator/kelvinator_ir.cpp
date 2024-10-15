@@ -12,7 +12,7 @@ using remote_base::KelvinatorProtocol;
 static const char *const TAG = "kelvinator.climate";
 
 void log_state(const ClimateData& data) {
-  auto rawData = data.get_raw();
+  auto rawData = data.data();
   char buffer[KELVINATOR_STATE_LENGTH * 2 + 1] = {0};
   for (uint8_t i = 0; i < KELVINATOR_STATE_LENGTH; i++) {
     snprintf(buffer + strlen(buffer), 3, "%02X", rawData[i]);
