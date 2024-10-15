@@ -11,15 +11,6 @@ using remote_base::KelvinatorProtocol;
 
 static const char *const TAG = "kelvinator.climate";
 
-void log_state(const ClimateData& data) {
-  auto rawData = data.data();
-  char buffer[KELVINATOR_STATE_LENGTH * 2 + 1] = {0};
-  for (uint8_t i = 0; i < KELVINATOR_STATE_LENGTH; i++) {
-    snprintf(buffer + strlen(buffer), 3, "%02X", rawData[i]);
-  }
-  ESP_LOGV(TAG, "Raw data: %s", buffer);
-}
-
 void KelvinatorClimate::transmit_state() {
   ClimateData data;
   data.set_power(true);
@@ -81,7 +72,6 @@ void KelvinatorClimate::transmit_state() {
   }
 
   data.fix();
-  log_state(data);
   ESP_LOGV(TAG, "Sending Kelvinator code: 0x%s", data.to_string().c_str());
   this->transmit_<remote_base::KelvinatorProtocol>(data);
 }
