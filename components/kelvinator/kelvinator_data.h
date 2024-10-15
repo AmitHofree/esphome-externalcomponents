@@ -186,6 +186,9 @@ class ClimateData : public KelvinatorData {
   ClimateBitField& bit_field_() {
     return *reinterpret_cast<ClimateBitField*>(data_.data());
   }
+  const ClimateBitField& bit_field_() const {
+        return *reinterpret_cast<const ClimateBitField*>(data_.data());
+  }
 
   void state_reset_() {
     this->data_.fill(0);
