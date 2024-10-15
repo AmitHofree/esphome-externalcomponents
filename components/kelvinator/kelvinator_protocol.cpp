@@ -21,7 +21,7 @@ static const uint16_t KELVINATOR_GAP_SPACE_TICKS = 235;
 static const uint16_t KELVINATOR_GAP_SPACE = KELVINATOR_GAP_SPACE_TICKS * KELVINATOR_TICK;
 static const uint8_t KELVINATOR_CHECKSUM_START = 10;
 
-void log_state_32(const uint32_t data[], size_t length) {
+void log_state_32(const int data[], size_t length) {
   size_t buffer_size = 9 + length * 12 + 1;
   char* buffer = new char[buffer_size];
   strcpy(buffer, "Raw data:");
@@ -35,7 +35,7 @@ void log_state_32(const uint32_t data[], size_t length) {
   delete[] buffer;
 }
 
-void log_state_8(const uint8_t data[], size_t length) {
+void log_state_8(const char data[], size_t length) {
   size_t buffer_size = 9 + length * 12 + 1;
   char* buffer = new char[buffer_size];
   strcpy(buffer, "Raw data:");
