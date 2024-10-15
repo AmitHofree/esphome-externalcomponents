@@ -76,7 +76,7 @@ void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &d
     dst->item(KELVINATOR_BIT_MARK, 2 * KELVINATOR_GAP_SPACE);
   }
 
-  log_state_32(dst->get_data(), dst->get_data().size());
+  log_state_32(dst->get_data().data(), dst->get_data().size());
 }
 
 void KelvinatorProtocol::encode_byte_(RemoteTransmitData *dst, uint8_t item) {
