@@ -21,7 +21,21 @@ static const uint16_t KELVINATOR_GAP_SPACE_TICKS = 235;
 static const uint16_t KELVINATOR_GAP_SPACE = KELVINATOR_GAP_SPACE_TICKS * KELVINATOR_TICK;
 static const uint8_t KELVINATOR_CHECKSUM_START = 10;
 
-void log_state(const uint32_t[] data, size_t length) {
+void log_state_32(const uint32_t[] data, size_t length) {
+  size_t buffer_size = 9 + length * 12 + 1;
+  char* buffer = new char[buffer_size];
+  strcpy(buffer, "Raw data:");
+  
+  for (size_t i = 0; i < length; ++i) {
+      // Append each value to the buffer
+      snprintf(buffer + strlen(buffer), 12, " %d", data[i]);
+  }
+    
+  ESP_LOGV(TAG, "%s", buffer);
+  delete[] buffer;
+}
+
+void log_state_8(const uint8_t[] data, size_t length) {
   size_t buffer_size = 9 + length * 12 + 1;
   char* buffer = new char[buffer_size];
   strcpy(buffer, "Raw data:");
@@ -38,7 +52,7 @@ void log_state(const uint32_t[] data, size_t length) {
 void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &data) {
   dst->set_carrier_frequency(38000);
   dst->reserve(2 * 2 * (6 + 8 * 8));  // Two messages, each message can carry 8 bytes, requires 6 extra bits, and each bit is one mark + space
-  log_state(data.data(), KELVINATOR_STATE_LENGTH);
+  log_state_8(data->data(), KELVINATOR_STATE_LENGTH);
 
   // There are two messages back-to-back in a full Kelvinator IR message
   // sequence.
@@ -62,7 +76,7 @@ void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &d
     dst->item(KELVINATOR_BIT_MARK, 2 * KELVINATOR_GAP_SPACE);
   }
 
-  log_state(*dst, dst.get_data().size());
+  log_state_32(*dst, dst->get_data().size());
 }
 
 void KelvinatorProtocol::encode_byte_(RemoteTransmitData *dst, uint8_t item) {
