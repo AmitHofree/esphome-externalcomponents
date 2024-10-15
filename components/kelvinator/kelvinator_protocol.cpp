@@ -35,7 +35,7 @@ void log_state_32(const int data[], size_t length) {
   delete[] buffer;
 }
 
-void log_state_u8(const  char data[]) {
+void log_state_u8(const unsigned char data[]) {
   char buffer[KELVINATOR_STATE_LENGTH * 2 + 1] = {0};
   for (uint8_t i = 0; i < KELVINATOR_STATE_LENGTH; i++) {
     snprintf(buffer + strlen(buffer), 3, "%02X", data[i]);
