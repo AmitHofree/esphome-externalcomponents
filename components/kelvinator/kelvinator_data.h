@@ -99,80 +99,80 @@ class ClimateData : public KelvinatorData {
   ClimateData() : KelvinatorData() { this->state_reset_(); }
   ClimateData(const KelvinatorData &data) : KelvinatorData(data) {}
 
-  void set_power(const bool on) { this->bit_field_.Power = on; }
-  bool get_power(void) const { return this->bit_field_.Power; }
+  void set_power(const bool on) { this->bit_field_().Power = on; }
+  bool get_power(void) const { return this->bit_field_().Power; }
 
   void set_temp(const uint8_t degrees) {
     uint8_t temp = std::max(KELVINATOR_TEMP_MIN, degrees);
     temp = std::min(KELVINATOR_TEMP_MAX, degrees);
-    this->bit_field_.Temp = temp - KELVINATOR_TEMP_MIN;
+    this->bit_field_().Temp = temp - KELVINATOR_TEMP_MIN;
   }
-  uint8_t get_temp(void) const { return this->bit_field_.Temp + KELVINATOR_TEMP_MIN; }
+  uint8_t get_temp(void) const { return this->bit_field_().Temp + KELVINATOR_TEMP_MIN; }
 
   void set_fan(const uint8_t speed) {
     uint8_t fan = std::min(KELVINATOR_FAN_MAX, speed);  // Bounds check
 
     // Only change things if we need to.
-    if (fan != this->bit_field_.Fan) {
+    if (fan != this->bit_field_().Fan) {
       // Set the basic fan values.
-      this->bit_field_.BasicFan = std::min(KELVINATOR_FAN_BASIC_MAX, fan);
+      this->bit_field_().BasicFan = std::min(KELVINATOR_FAN_BASIC_MAX, fan);
       // Set the advanced(?) fan value.
-      this->bit_field_.Fan = fan;
+      this->bit_field_().Fan = fan;
       // Turbo mode is turned off if we change the fan settings.
       this->set_turbo(false);
     }
   }
-  uint8_t get_fan(void) const { return this->bit_field_.Fan; }
+  uint8_t get_fan(void) const { return this->bit_field_().Fan; }
 
   void set_mode(const Mode mode) {
     if (mode == Mode::AUTO || mode == Mode::DRY) {
       this->set_temp(KELVINATOR_TEMP_AUTO);
     }
-    this->bit_field_.Mode = mode;
+    this->bit_field_().Mode = mode;
   }
   Mode get_mode(void) const {
-    if (this->bit_field_.Mode <= Mode::HEAT)
-      return static_cast<Mode>(this->bit_field_.Mode);
+    if (this->bit_field_().Mode <= Mode::HEAT)
+      return static_cast<Mode>(this->bit_field_().Mode);
     return Mode::AUTO;
   }
 
   void set_swing_vertical(const bool automatic, const SwingPosition position) {
-    this->bit_field_.SwingV = position;
-    this->bit_field_.SwingAuto = (automatic || this->bit_field_.SwingH);
+    this->bit_field_().SwingV = position;
+    this->bit_field_().SwingAuto = (automatic || this->bit_field_().SwingH);
   };
-  bool get_swing_vertical_auto(void) const { return this->bit_field_.SwingV & 0b0001; };
+  bool get_swing_vertical_auto(void) const { return this->bit_field_().SwingV & 0b0001; };
   SwingPosition get_swing_vertical_position(void) const {
-    uint8_t value = this->bit_field_.SwingV;
+    uint8_t value = this->bit_field_().SwingV;
     if (value <= LOW_AUTO || value == MIDDLE_AUTO || value == HIGH_AUTO)
       return static_cast<SwingPosition>(value);
     return SwingPosition::OFF;  // Default value if out of range
   };
 
   void set_swing_horizontal(const bool on) {
-    this->bit_field_.SwingH = on;
-    this->bit_field_.SwingAuto = (on || (this->bit_field_.SwingV & 0b0001));
+    this->bit_field_().SwingH = on;
+    this->bit_field_().SwingAuto = (on || (this->bit_field_().SwingV & 0b0001));
   }
-  bool get_swing_horizontal(void) const { return this->bit_field_.SwingH; }
+  bool get_swing_horizontal(void) const { return this->bit_field_().SwingH; }
 
-  void set_quiet(const bool on) { this->bit_field_.Quiet = on; }
-  bool get_quiet(void) const { return this->bit_field_.Quiet; }
+  void set_quiet(const bool on) { this->bit_field_().Quiet = on; }
+  bool get_quiet(void) const { return this->bit_field_().Quiet; }
 
-  void set_ion_filter(const bool on) { this->bit_field_.IonFilter = on; }
-  bool get_ion_filter(void) const { return this->bit_field_.IonFilter; }
+  void set_ion_filter(const bool on) { this->bit_field_().IonFilter = on; }
+  bool get_ion_filter(void) const { return this->bit_field_().IonFilter; }
 
-  void set_light(const bool on) { this->bit_field_.Light = on; }
-  bool get_light(void) const { return this->bit_field_.Light; }
+  void set_light(const bool on) { this->bit_field_().Light = on; }
+  bool get_light(void) const { return this->bit_field_().Light; }
 
-  void set_x_fan(const bool on) { this->bit_field_.XFan = on; }
-  bool get_x_fan(void) const { return this->bit_field_.XFan; }
+  void set_x_fan(const bool on) { this->bit_field_().XFan = on; }
+  bool get_x_fan(void) const { return this->bit_field_().XFan; }
 
-  void set_turbo(const bool on) { this->bit_field_.Turbo = on; }
-  bool get_turbo(void) const { return this->bit_field_.Turbo; }
+  void set_turbo(const bool on) { this->bit_field_().Turbo = on; }
+  bool get_turbo(void) const { return this->bit_field_().Turbo; }
 
   std::array<uint8_t, KELVINATOR_STATE_LENGTH> get_raw(void) const { return this->data_; }
 
   void fix() {
-    if (this->bit_field_.Mode != Mode::COOL && this->bit_field_.Mode != Mode::DRY) {
+    if (this->bit_field_().Mode != Mode::COOL && this->bit_field_().Mode != Mode::DRY) {
       this->set_x_fan(false);
     }
 
@@ -183,10 +183,9 @@ class ClimateData : public KelvinatorData {
   }
 
  protected:
-  union {
-    std::array<uint8_t, KELVINATOR_STATE_LENGTH> data_;
-    ClimateBitField bit_field_;
-  };
+  ClimateBitField& bit_field_() {
+    return *reinterpret_cast<ClimateBitField*>(data_.data());
+  }
 
   void state_reset_() {
     this->data_.fill(0);
@@ -195,8 +194,8 @@ class ClimateData : public KelvinatorData {
   }
 
   void update_checksum_() {
-    this->bit_field_.Sum1 = calc_block_checksum_(this->data_.data());
-    this->bit_field_.Sum2 = calc_block_checksum_(this->data_.data() + 8);
+    this->bit_field_().Sum1 = calc_block_checksum_(this->data_.data());
+    this->bit_field_().Sum2 = calc_block_checksum_(this->data_.data() + 8);
   }
 };
 
