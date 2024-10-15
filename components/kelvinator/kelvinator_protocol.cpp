@@ -52,7 +52,7 @@ void log_state_u8(const unsigned char data[], size_t length) {
 void KelvinatorProtocol::encode(RemoteTransmitData *dst, const KelvinatorData &data) {
   dst->set_carrier_frequency(38000);
   dst->reserve(2 * 2 * (6 + 8 * 8));  // Two messages, each message can carry 8 bytes, requires 6 extra bits, and each bit is one mark + space
-  log_state_8(data.data(), KELVINATOR_STATE_LENGTH);
+  log_state_u8(data.data(), KELVINATOR_STATE_LENGTH);
 
   // There are two messages back-to-back in a full Kelvinator IR message
   // sequence.
