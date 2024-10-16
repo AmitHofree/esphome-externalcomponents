@@ -169,8 +169,6 @@ class ClimateData : public KelvinatorData {
   void set_turbo(const bool on) { this->bit_field_().Turbo = on; }
   bool get_turbo(void) const { return this->bit_field_().Turbo; }
 
-  std::array<uint8_t, KELVINATOR_STATE_LENGTH> get_raw(void) const { return this->data_; }
-
   void fix() {
     if (this->bit_field_().Mode != Mode::COOL && this->bit_field_().Mode != Mode::DRY) {
       this->set_x_fan(false);
